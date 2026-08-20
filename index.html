@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>UNIQUE × Snowflake — What's next?</title>
+<meta name="description" content="Thank you from Snowflake. Choose your next step on the UNIQUE data journey." />
+<meta name="theme-color" content="#17171A" />
+<!--
+  UNIQUE x Snowflake - end-of-demo "choose your own adventure" page.
+
+  SELF-CONTAINED BY DESIGN. No CDN, no external fonts, no analytics, no network
+  calls of any kind. It renders identically on conference wifi, bad hotel wifi,
+  or no wifi at all. Do not add a <script src> or an @import font to this file.
+
+  React (via CDN) was deliberately NOT used for the same reason - if the venue
+  blocks the CDN, the page is blank in front of the customer. Plain JS instead.
+
+  All outbound links were verified to return HTTP 200 on 2026-08-19. If you edit
+  one, re-check it. A dead link here undoes the whole effect.
+-->
+<style>
+  :root {
+    --ink:      #17171A;   /* UNIQUE near-black */
+    --paper:    #FBFAF8;   /* UNIQUE off-white  */
+    --muted:    #6F6A63;
+    --line:     #ECE7E0;
+    --sf-blue:  #29B5E8;   /* Snowflake blue    */
+    --pop-1:    #FF6B4A;   /* coral   - AIM     */
+    --pop-2:    #1F9D55;   /* green   - retail  */
+    --pop-3:    #7C5CFF;   /* violet  - learn   */
+    --pop-4:    #F2B01E;   /* amber   - buy     */
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+    min-height: 100vh; min-height: 100dvh; overflow-x: hidden;
+  }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 1.5rem 1.15rem 3rem; }
+
+  /* ---------- header ---------- */
+  .brand { display: flex; align-items: center; gap: .6rem; justify-content: center; padding-top: .6rem; }
+  .brand-u { font-weight: 800; letter-spacing: .34em; font-size: 1rem; }
+  .brand-x { color: var(--muted); font-size: .9rem; }
+  .brand-sf { display: inline-flex; align-items: center; gap: .35rem; font-weight: 700; font-size: .95rem; }
+  .flake { width: 18px; height: 18px; }
+
+  h1 { font-size: 1.9rem; line-height: 1.15; letter-spacing: -.02em; margin: 1.6rem 0 .5rem; }
+  h1 .names { color: var(--sf-blue); }
+  .lede { font-size: 1rem; color: var(--muted); margin: 0 0 .35rem; }
+  .kicker {
+    display: inline-block; font-size: .66rem; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase; background: var(--ink); color: var(--paper);
+    padding: .28rem .6rem; border-radius: 999px; margin-top: 1.2rem;
+  }
+  .prompt { font-size: 1.05rem; font-weight: 700; margin: 1.6rem 0 .9rem; }
+
+  /* ---------- adventure cards ---------- */
+  .cards { display: grid; gap: .75rem; }
+  .card {
+    display: block; text-align: left; width: 100%; cursor: pointer;
+    background: #fff; border: 1px solid var(--line); border-left: 6px solid var(--c, var(--sf-blue));
+    border-radius: 16px; padding: 1rem 1.05rem; color: inherit; text-decoration: none;
+    font: inherit; position: relative; overflow: hidden;
+    transition: transform .16s ease, box-shadow .16s ease;
+  }
+  .card:hover, .card:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(20,20,25,.10); outline: none; }
+  .card:active { transform: translateY(-1px) scale(.995); }
+  .card-top { display: flex; align-items: center; gap: .6rem; }
+  .num {
+    width: 26px; height: 26px; flex: 0 0 26px; border-radius: 50%;
+    background: var(--c); color: #fff; display: grid; place-items: center;
+    font-size: .78rem; font-weight: 800;
+  }
+  .card h2 { font-size: 1.02rem; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+  .card p { margin: .45rem 0 0; font-size: .85rem; color: var(--muted); }
+  .card .go { margin-top: .6rem; font-size: .78rem; font-weight: 700; color: var(--c); }
+  .ext { font-size: .68rem; color: var(--muted); font-weight: 600; }
+
+  /* ---------- screens ---------- */
+  .screen { display: none; animation: rise .3s ease both; }
+  .screen.on { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .back {
+    background: none; border: none; color: var(--muted); font: inherit; font-size: .85rem;
+    font-weight: 600; cursor: pointer; padding: .4rem 0; margin-bottom: .4rem;
+  }
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1.15rem; }
+  .panel h2 { margin: 0 0 .5rem; font-size: 1.3rem; letter-spacing: -.02em; }
+  .panel p { font-size: .92rem; color: #3f3b36; }
+  .bullets { margin: .8rem 0 0; padding-left: 1.1rem; font-size: .9rem; color: #3f3b36; }
+  .bullets li { margin: .35rem 0; }
+
+  .cta {
+    display: inline-block; margin-top: 1rem; background: var(--ink); color: var(--paper);
+    text-decoration: none; font-weight: 700; font-size: .92rem;
+    padding: .8rem 1.1rem; border-radius: 14px; border: none; cursor: pointer;
+  }
+  .cta.blue { background: var(--sf-blue); }
+  .cta:disabled { opacity: .4; cursor: not-allowed; }
+  .note { font-size: .76rem; color: var(--muted); margin-top: .7rem; }
+
+  /* ---------- purchase ---------- */
+  .check { display: flex; gap: .7rem; align-items: flex-start; margin: 1rem 0; cursor: pointer; }
+  .check input { width: 24px; height: 24px; accent-color: var(--pop-4); flex: 0 0 24px; margin: 0; }
+  .check span { font-size: .95rem; font-weight: 600; }
+  .sigwrap { margin-top: 1rem; }
+  .siglabel { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  canvas#sig {
+    width: 100%; height: 150px; background: #fffdf7; border: 2px dashed #DFD7C8;
+    border-radius: 14px; margin-top: .4rem; touch-action: none; display: block;
+  }
+  .sigrow { display: flex; justify-content: space-between; align-items: center; margin-top: .4rem; }
+  .clear { background: none; border: none; color: var(--muted); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+  .receipt { text-align: center; }
+  .tick {
+    width: 62px; height: 62px; border-radius: 50%; background: var(--pop-2); color: #fff;
+    display: grid; place-items: center; font-size: 2rem; margin: 0 auto .6rem;
+    animation: pop .45s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+  .sigshow { max-width: 100%; border-bottom: 2px solid var(--ink); margin: .5rem auto 0; display: block; }
+
+  /* ---------- presenter / QR ---------- */
+  .qrpanel { text-align: center; }
+  .qrpanel img { width: 260px; height: 260px; image-rendering: pixelated; }
+  .qrurl {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.05rem;
+    font-weight: 700; background: var(--ink); color: var(--paper);
+    padding: .5rem .8rem; border-radius: 10px; display: inline-block; margin-top: .6rem;
+  }
+  footer { text-align: center; margin-top: 2rem; font-size: .72rem; color: var(--muted); }
+  footer a { color: var(--muted); }
+
+  /* ---------- confetti ---------- */
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+
+  <div class="brand">
+    <span class="brand-u">UNIQUE</span>
+    <span class="brand-x">×</span>
+    <span class="brand-sf">
+      <svg class="flake" viewBox="0 0 24 24" aria-hidden="true">
+        <g stroke="#29B5E8" stroke-width="2" stroke-linecap="round">
+          <path d="M12 2v20M3.5 6.5l17 11M20.5 6.5l-17 11"/>
+        </g>
+      </svg>
+      Snowflake
+    </span>
+  </div>
+
+  <!-- ================= HOME ================= -->
+  <section id="home" class="screen on">
+    <span class="kicker">Thank you</span>
+    <h1>Welcome to Snowflake,<br><span class="names">David &amp; Alex</span></h1>
+    <p class="lede">
+      We hope you enjoyed the solution demo. Everything you saw ran on one governed
+      copy of your data.
+    </p>
+    <p class="prompt">So — what would you like to do next?</p>
+
+    <div class="cards">
+      <a class="card" style="--c: var(--pop-1)" href="https://docs.snowflake.com/en/migrations/aim-for-datawarehouses/overview" target="_blank" rel="noopener">
+        <div class="card-top"><span class="num">1</span><h2>Watch &amp; read: AI-assisted Migrations</h2></div>
+        <p>How Snowflake AIM moves a warehouse for you — SnowConvert conversion, dependency-aware
+           deployment waves, automated two-sided testing. Built for the “who does the work?” question.</p>
+        <div class="go">Open AIM material <span class="ext">· docs.snowflake.com</span></div>
+      </a>
+
+      <a class="card" style="--c: var(--pop-2)" href="https://www.snowflake.com/en/solutions/industries/retail/" target="_blank" rel="noopener">
+        <div class="card-top"><span class="num">2</span><h2>Read a retail customer story</h2></div>
+        <p>Retailers using Snowflake for personalisation, demand forecasting and a single
+           view of the customer — with named customer stories.</p>
+        <div class="go">Open retail stories <span class="ext">· snowflake.com</span></div>
+      </a>
+
+      <a class="card" style="--c: var(--pop-3)" href="https://www.snowflake.com/en/" target="_blank" rel="noopener">
+        <div class="card-top"><span class="num">3</span><h2>Learn more about Snowflake</h2></div>
+        <p>The AI Data Cloud: one platform for warehousing, engineering, apps, AI and
+           secure sharing — no clusters to tune.</p>
+        <div class="go">Open snowflake.com <span class="ext">· snowflake.com</span></div>
+      </a>
+
+      <button class="card" style="--c: var(--pop-4)" data-go="buy">
+        <div class="card-top"><span class="num">4</span><h2>We're ready to buy 🎉</h2></div>
+        <p>Bold choice. Tick the box, sign with your finger, and we'll take it from there.</p>
+        <div class="go">Let's do it →</div>
+      </button>
+    </div>
+
+    <footer>
+      Built for the UNIQUE solution demo · Synthetic demo data only<br>
+      <a href="#" data-go="present">Presenter view</a>
+    </footer>
+  </section>
+
+  <!-- ================= BUY ================= -->
+  <section id="buy" class="screen">
+    <button class="back" data-go="home">← Back to the adventure</button>
+    <div class="panel">
+      <h2>Ready when you are</h2>
+      <p>
+        This is the fun version. The real version involves your procurement team, and
+        we'll make that part painless too.
+      </p>
+
+      <label class="check">
+        <input type="checkbox" id="agree" />
+        <span>Yes — we're ready to start our Snowflake journey with UNIQUE.</span>
+      </label>
+
+      <div class="sigwrap">
+        <span class="siglabel">Sign here</span>
+        <canvas id="sig"></canvas>
+        <div class="sigrow">
+          <span class="note">Use your finger or mouse</span>
+          <button class="clear" id="clearSig">Clear</button>
+        </div>
+      </div>
+
+      <button class="cta" id="submitBuy" disabled>Make it official</button>
+      <p class="note" id="buyHint">Tick the box and add a signature to continue.</p>
+    </div>
+  </section>
+
+  <!-- ================= DONE ================= -->
+  <section id="done" class="screen">
+    <div class="panel receipt">
+      <div class="tick">✓</div>
+      <h2>Signed, sealed, delivered</h2>
+      <p id="doneWho">Thank you!</p>
+      <img id="sigOut" class="sigshow" alt="Your signature" />
+      <p class="note" id="stamp"></p>
+      <hr style="border:none;border-top:1px solid var(--line);margin:1.1rem 0" />
+      <p style="font-size:.9rem"><strong>What actually happens next</strong></p>
+      <ul class="bullets" style="text-align:left">
+        <li>Migration assessment on your Netezza DDL and stored procedures — scoped, with a real number</li>
+        <li>POC success criteria written by <strong>you</strong>, not us</li>
+        <li>Commercial readout with your account team</li>
+      </ul>
+      <a class="cta blue" href="https://www.snowflake.com/en/contact/" target="_blank" rel="noopener">Talk to Snowflake</a>
+      <p class="note">This page is a bit of fun — it isn't a contract, and nothing was sent anywhere.</p>
+      <button class="back" data-go="home" style="margin-top:.8rem">← Start over</button>
+    </div>
+  </section>
+
+  <!-- ================= PRESENTER ================= -->
+  <section id="present" class="screen">
+    <button class="back" data-go="home">← Back</button>
+    <div class="panel qrpanel">
+      <h2>Point your camera here</h2>
+      <img id="qrimg" src="qr.png" alt="QR code to open this page"
+           onerror="document.getElementById('qrmiss').style.display='block';this.style.display='none'" />
+      <div id="qrmiss" style="display:none" class="note">
+        QR image not found. Run <strong>./start.sh</strong> to generate it for your current wifi address.
+      </div>
+      <div class="qrurl" id="qrurl">—</div>
+      <p class="note">Phones must be on the same wifi as this laptop.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- tiny router ----------
+  // Hash routing matters: start.sh advertises <url>/#present so the QR screen can
+  // be opened directly, and a projected browser may get reloaded mid-session.
+  var screens = ["home", "buy", "done", "present"];
+  var HASH_OK = ["home", "buy", "present"];   // 'done' needs a signature, so not linkable
+
+  function show(id, fromHash) {
+    screens.forEach(function (s) {
+      document.getElementById(s).classList.toggle("on", s === id);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "present") paintUrl();
+    if (!fromHash) {
+      var want = (id === "home") ? "" : "#" + id;
+      if (window.location.hash !== want) {
+        history.replaceState(null, "", want || window.location.pathname);
+      }
+    }
+  }
+
+  function routeFromHash() {
+    var id = (window.location.hash || "").replace("#", "").toLowerCase();
+    show(HASH_OK.indexOf(id) >= 0 ? id : "home", true);
+  }
+  window.addEventListener("hashchange", routeFromHash);
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-go]");
+    if (!t) return;
+    e.preventDefault();
+    show(t.getAttribute("data-go"));
+  });
+
+  // ---------- presenter URL ----------
+  function paintUrl() {
+    var o = window.location.origin;
+    var el = document.getElementById("qrurl");
+    el.textContent = /localhost|127\.0\.0\.1/.test(o)
+      ? "Open via your wifi IP, not localhost"
+      : o;
+  }
+
+  // ---------- signature pad ----------
+  var cv = document.getElementById("sig");
+  var ctx = cv.getContext("2d");
+  var drawing = false, hasInk = false;
+
+  function sizeCanvas() {
+    var r = cv.getBoundingClientRect();
+    var dpr = window.devicePixelRatio || 1;
+    var data = hasInk ? cv.toDataURL() : null;
+    cv.width = Math.round(r.width * dpr);
+    cv.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2.6;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#17171A";
+    if (data) { // preserve ink across rotation
+      var img = new Image();
+      img.onload = function () { ctx.drawImage(img, 0, 0, r.width, r.height); };
+      img.src = data;
+    }
+  }
+  sizeCanvas();
+  window.addEventListener("resize", sizeCanvas);
+
+  function pos(e) {
+    var r = cv.getBoundingClientRect();
+    var p = e.touches ? e.touches[0] : e;
+    return { x: p.clientX - r.left, y: p.clientY - r.top };
+  }
+  function start(e) { e.preventDefault(); drawing = true; var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    hasInk = true; gate();
+  }
+  function end() { drawing = false; }
+
+  cv.addEventListener("pointerdown", start);
+  cv.addEventListener("pointermove", move);
+  cv.addEventListener("pointerup", end);
+  cv.addEventListener("pointerleave", end);
+  // touch fallback for older iOS Safari
+  cv.addEventListener("touchstart", start, { passive: false });
+  cv.addEventListener("touchmove", move, { passive: false });
+  cv.addEventListener("touchend", end);
+
+  document.getElementById("clearSig").addEventListener("click", function () {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    hasInk = false; gate();
+  });
+
+  // ---------- gate the button ----------
+  var agree = document.getElementById("agree");
+  var btn = document.getElementById("submitBuy");
+  var hint = document.getElementById("buyHint");
+  function gate() {
+    var ok = agree.checked && hasInk;
+    btn.disabled = !ok;
+    hint.textContent = ok
+      ? "Looks good. Go on then."
+      : (!agree.checked && !hasInk) ? "Tick the box and add a signature to continue."
+      : (!agree.checked) ? "Just the box left to tick."
+      : "Add your signature to continue.";
+  }
+  agree.addEventListener("change", gate);
+  gate();
+
+  // ---------- submit ----------
+  btn.addEventListener("click", function () {
+    document.getElementById("sigOut").src = cv.toDataURL("image/png");
+    document.getElementById("doneWho").textContent =
+      "David & Alex, welcome aboard. That's the easiest procurement cycle we've ever run.";
+    var now = new Date();
+    document.getElementById("stamp").textContent =
+      "Signed " + now.toLocaleDateString() + " at " + now.toLocaleTimeString();
+    show("done");
+    burst();
+  });
+
+  // ---------- confetti (hand-rolled, no library) ----------
+  var cc = document.getElementById("confetti");
+  var cctx = cc.getContext("2d");
+  var bits = [], raf = null;
+  var COLORS = ["#29B5E8", "#FF6B4A", "#1F9D55", "#7C5CFF", "#F2B01E", "#17171A"];
+
+  function fitCC() { cc.width = window.innerWidth; cc.height = window.innerHeight; }
+  fitCC();
+  window.addEventListener("resize", fitCC);
+
+  function burst() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    bits = [];
+    for (var i = 0; i < 130; i++) {
+      bits.push({
+        x: cc.width / 2 + (Math.random() - 0.5) * 120,
+        y: cc.height * 0.32,
+        vx: (Math.random() - 0.5) * 9,
+        vy: Math.random() * -11 - 3,
+        s: 4 + Math.random() * 7,
+        r: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.3,
+        c: COLORS[(Math.random() * COLORS.length) | 0],
+        life: 0
+      });
+    }
+    if (!raf) tick();
+  }
+
+  function tick() {
+    cctx.clearRect(0, 0, cc.width, cc.height);
+    var alive = 0;
+    bits.forEach(function (b) {
+      b.life++; b.vy += 0.34; b.x += b.vx; b.y += b.vy; b.r += b.vr; b.vx *= 0.995;
+      if (b.y < cc.height + 40) alive++;
+      cctx.save();
+      cctx.translate(b.x, b.y);
+      cctx.rotate(b.r);
+      cctx.fillStyle = b.c;
+      cctx.globalAlpha = Math.max(0, 1 - b.life / 170);
+      cctx.fillRect(-b.s / 2, -b.s / 2, b.s, b.s * 0.62);
+      cctx.restore();
+    });
+    if (alive > 0) { raf = requestAnimationFrame(tick); }
+    else { cctx.clearRect(0, 0, cc.width, cc.height); raf = null; }
+  }
+
+  // a small welcome burst, because why not
+  window.addEventListener("load", function () { setTimeout(burst, 420); });
+  routeFromHash();   // honour #present / #buy on first load
+  paintUrl();
+})();
+</script>
+</body>
+</html>
