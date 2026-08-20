@@ -264,10 +264,9 @@
       <img id="qrimg" src="qr.png" alt="QR code to open this page"
            onerror="document.getElementById('qrmiss').style.display='block';this.style.display='none'" />
       <div id="qrmiss" style="display:none" class="note">
-        QR image not found. Run <strong>./start.sh</strong> to generate it for your current wifi address.
+        QR image not found. Run <strong>./qr.sh &lt;url&gt;</strong> to regenerate it.
       </div>
       <div class="qrurl" id="qrurl">—</div>
-      <p class="note">Phones must be on the same wifi as this laptop.</p>
     </div>
   </section>
 
@@ -278,8 +277,8 @@
   "use strict";
 
   // ---------- tiny router ----------
-  // Hash routing matters: start.sh advertises <url>/#present so the QR screen can
-  // be opened directly, and a projected browser may get reloaded mid-session.
+  // Hash routing matters: the presenter screen is linkable as <url>#present so it
+  // can be opened directly, and a projected browser may get reloaded mid-session.
   var screens = ["home", "buy", "done", "present"];
   var HASH_OK = ["home", "buy", "present"];   // 'done' needs a signature, so not linkable
 
@@ -312,11 +311,12 @@
 
   // ---------- presenter URL ----------
   function paintUrl() {
-    var o = window.location.origin;
-    var el = document.getElementById("qrurl");
-    el.textContent = /localhost|127\.0\.0\.1/.test(o)
-      ? "Open via your wifi IP, not localhost"
-      : o;
+    // Must include the path, not just the origin. The page is published under
+    // /unique-next/ on GitHub Pages, so showing origin alone would project a URL
+    // that 404s for anyone who types it in rather than scanning the QR.
+    var url = window.location.origin + window.location.pathname;
+    url = url.replace(/index\.html$/, "");
+    document.getElementById("qrurl").textContent = url;
   }
 
   // ---------- signature pad ----------
